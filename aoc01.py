@@ -34,6 +34,20 @@ def part2(data):
 
 if __name__ == '__main__':
 
+    print('Testing Part 1')
+    test_eq('Ex1.1', calc_fuel, 2, 12)
+    test_eq('Ex1.2', calc_fuel, 2, 14)
+    test_eq('Ex1.3', calc_fuel, 654, 1969)
+    test_eq('Ex1.4', calc_fuel, 33583, 100756)
+
+    print()
+    print('Testing Part 2')
+    test_eq('Ex2.1', calc_fuel_fuel, 2, 14)
+    test_eq('Ex2.2', calc_fuel_fuel, 966, 1969)
+    test_eq('Ex2.3', calc_fuel_fuel, 50346, 100756)
+
+    print()
+
     data = get_input('input1')
 
     sf = part1(data)
