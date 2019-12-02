@@ -24,7 +24,7 @@ def search(data, val):
             if c.get_addr(0) == val:
                 pd('Found:', noun, verb)
                 pd('Result:', 100 * noun + verb)
-                c.show()
+                # c.show()
                 return (noun, verb)
     return False
 
@@ -39,11 +39,19 @@ def part2(data, val):
     noun, verb =  search(data, val)
     return 100 * noun + verb
 
+def test(data):
+    c = Computer(data)
+    c.run()
+    r = c.memory
+    return r
+
 if __name__ == '__main__':
-    # rd = ['1', '0', '0', '0', '99']
-    # rd = ['2', '3', '0', '3', '99']
-    # rd = ['2', '4', '4', '5', '99', '0']
-    # rd = ['1', '1', '1', '4', '99', '5', '6', '0', '99']
+    test_eq('Add', test, [1+1, 0, 0, 0, 99], [1, 0, 0, 0, 99])
+    test_eq('Mul', test, [2, 4, 4, 5, 99, 99*99], [2, 4, 4, 5, 99, 0])
+    test_eq('SMC', test, [5*6, 1, 1, 4, 1+1, 5, 6, 0, 99], [1, 1, 1, 4, 99, 5, 6, 0, 99])
+    test_eq('Ex1', test, [(30+40)*50,9,10,30+40, 2,3,11,0, 99, 30,40,50], [1,9,10,3, 2,3,11,0, 99, 30,40,50])
+    print()
+
     data = get_input('input2')
 
     r = part1(data)

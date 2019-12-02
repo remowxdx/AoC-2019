@@ -14,3 +14,12 @@ class Debug():
         if self.enabled:
             print(*args, **kwargs)
 
+def test_eq(name, func, result, *args, **kwargs):
+    print(f' * Testing {name}...', end=' ')
+    r = func(*args, **kwargs)
+    if r == result:
+        print(f'\x1b[1;32mOK!\x1b[0m ☺ ')
+    else:
+        print(f'\x1b[1;41mNOT OK\x1b[0m ☹ ')
+        print(f'\tExpected {result}, found {r}')
+    
