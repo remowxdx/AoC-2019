@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+from aoc import *
+
+pd = Debug(False)
+
 def get_input(file_name):
     data = []
     with open(file_name, 'r') as f:
@@ -14,12 +18,27 @@ def calc_fuel_fuel(mass):
     f = calc_fuel(mass)
     while f > 0:
         sf += f
-        print(f)
+        pd(f)
         f = calc_fuel(f)
     return sf
 
-if __name__ == '__main__':
-    data = get_input('input1')
+def part1(data):
+    fuel = [calc_fuel(mass) for mass in data]
+    sf = sum(fuel)
+    return sf
+
+def part2(data):
     fuel = [calc_fuel_fuel(mass) for mass in data]
     sf = sum(fuel)
-    print(sf)
+    return sf # 5041680
+
+if __name__ == '__main__':
+
+    data = get_input('input1')
+
+    sf = part1(data)
+    print(f'Part 1: {sf}')
+
+    sff = part2(data)
+    print(f'Part 2: {sff}')
+
