@@ -35,7 +35,7 @@ def wire_path(data):
         length = int(d[1:])
         for n in range(length):
             pos = move(pos, direction)
-            path.add(str(pos))
+            path.add(pos)
     return path
 
 def wire_path_with_steps(data):
@@ -48,7 +48,7 @@ def wire_path_with_steps(data):
         for n in range(length):
             steps += 1
             pos = move(pos, direction)
-            path[str(pos)] = steps
+            path[pos] = steps
     return path
 
 def find_nearest_crossing(data):
@@ -62,7 +62,7 @@ def find_nearest_crossing(data):
         length = int(d[1:])
         for n in range(length):
             pos = move(pos, direction)
-            if str(pos) in p1:
+            if pos in p1:
                 dist = abs(pos[0]) + abs(pos[1])
                 if best_crossing is None or dist < best_crossing:
                     print('**********', dist, pos)
@@ -82,8 +82,8 @@ def find_shortest_crossing(data):
         for n in range(length):
             steps += 1
             pos = move(pos, direction)
-            if str(pos) in p1:
-                dist = steps + p1[str(pos)]
+            if pos in p1:
+                dist = steps + p1[pos]
                 if best_crossing is None or dist < best_crossing:
                     print('**********', dist, pos)
                     best_crossing = dist
