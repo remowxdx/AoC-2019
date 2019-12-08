@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from aoc import *
-from computer_gen import Computer
+from computer import Computer
 
 from itertools import permutations
 
