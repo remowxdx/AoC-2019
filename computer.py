@@ -5,7 +5,7 @@ from aoc import *
 pd = Debug(False)
 
 class Computer:
-    def __init__(self, data, in_func=input, out_func=print):
+    def __init__(self, data, inp=[]):
         self.opcodes = {
                 1: self.add,
                 2: self.mul,
@@ -19,11 +19,11 @@ class Computer:
                 }
 
         self.memory = data
-        self.in_func = in_func
-        self.out_func = out_func
+        self.input = inp
+        self.output = []
+        self.output_index = 0
 
         self.ip = 0
-        self.output = []
 
     def step(self):
         instruction = self.get_addr(self.ip)
@@ -43,10 +43,26 @@ class Computer:
         while r == 'OK':
             r = self.step()
 
-        if r != 'HALT':
-            raise Exception("Error at {}, abnormal halt.".format(self.ip))
-        else:
+        if r == 'WAIT':
+            pd('Waiting for input...')
+
+        elif r == 'HALT':
+            # print('Computer halted!')
             pd(r)
+
+        else:
+            raise Exception("Error at {}, abnormal halt.".format(self.ip))
+        return r
+
+    def send(self, value):
+        self.input.append(value)
+
+    def recv(self):
+        if self.output_index < len(self.output):
+            out = self.output[self.output_index]
+            self.output_index += 1
+            return out
+        return None
 
     def get_param(self, param):
         if self.modes[param - 1] == 0:
@@ -75,14 +91,15 @@ class Computer:
         return 'OK'
     
     def input(self):
-        self.set_param(1, self.in_func())
-        self.ip += 2
-        return 'OK'
+        if len(self.input) > 0:
+            self.set_param(1, self.input.pop(0))
+            self.ip += 2
+            return 'OK'
+        return 'WAIT'
 
     def output(self):
         o = self.get_param(1)
         self.output.append(o)
-        self.out_func(0)
         self.ip += 2
         return 'OK'
 
