@@ -120,6 +120,8 @@ if __name__ == '__main__':
     r = part1(data)
 
     print(f'Part 1: {r}')
+    check_solution(3, 1, r)
 
     r = part2(data)
     print(f'Part 2: {r}')
+    check_solution(3, 2, r)

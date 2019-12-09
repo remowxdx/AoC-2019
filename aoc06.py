@@ -99,7 +99,9 @@ if __name__ == '__main__':
 
     r = part1(data)
     print(f'Part 1: {r}')
+    check_solution(6, 1, r)
 
     r = part2(data, 'YOU', 'SAN')
     print(f'Part 2: {r}')
+    check_solution(6, 2, r)
 
