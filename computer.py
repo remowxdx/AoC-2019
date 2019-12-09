@@ -15,6 +15,7 @@ class Computer:
                 6: self.jump_if_false,
                 7: self.less_than,
                 8: self.equals,
+                9: self.relative_base_offset,
                 99: self.halt
                 }
 
@@ -24,6 +25,7 @@ class Computer:
         self.output_index = 0
 
         self.ip = 0
+        self.rb = 0
 
     def step(self):
         instruction = self.get_addr(self.ip)
@@ -67,13 +69,25 @@ class Computer:
     def get_param(self, param):
         if self.modes[param - 1] == 0:
             return self.get_ref(self.ip + param)
-        return self.get_addr(self.ip + param)
+        elif self.modes[param - 1] == 1:
+            return self.get_addr(self.ip + param)
+        elif self.modes[param - 1] == 2:
+            return self.get_rel(self.ip + param)
+        else:
+            raise Exception(f'Parameter mode unknown at {self.ip}')
+            return None
 
     def set_param(self, param, val):
         pd('Set', val, 'mode', self.modes[param - 1], 'at', self.ip + param)
         if self.modes[param - 1] == 0:
             return self.set_ref(self.ip + param, val)
-        return self.set_addr(self.ip + param, val)
+        elif self.modes[param - 1] == 1:
+            return self.set_addr(self.ip + param, val)
+        elif self.modes[param - 1] == 2:
+            return self.set_rel(self.ip + param, val)
+        else:
+            raise Exception(f'Parameter mode unknown at {self.ip}')
+            return None
 
 
     def add(self):
@@ -141,20 +155,37 @@ class Computer:
         self.ip += 4
         return 'OK'
 
+    def relative_base_offset(self):
+        op1 = self.get_param(1)
+        self.rb += op1
+        self.ip += 2
+        return 'OK'
+
     def halt(self):
         return 'HALT'
 
     def get_addr(self, addr):
+        if addr >= len(self.memory):
+            # self.memory.extend([0 for _ in range(addr - len(self.memory))])
+            return 0
         return self.memory[addr]
 
     def set_addr(self, addr, val):
+        if addr >= len(self.memory):
+            self.memory.extend([0 for _ in range(addr - len(self.memory) + 1)])
         self.memory[addr] = val
 
     def get_ref(self, addr):
-        return self.memory[self.memory[addr]]
+        return self.get_addr(self.get_addr(addr))
 
     def set_ref(self, addr, val):
-        self.memory[self.memory[addr]] = val
+        self.set_addr(self.get_addr(addr), val)
+
+    def get_rel(self, addr):
+        return self.get_addr(self.rb + self.get_addr(addr))
+
+    def set_rel(self, addr, val):
+        self.set_addr(self.rb + self.get_addr(addr), val)
 
     def show(self):
         memory_str = []
