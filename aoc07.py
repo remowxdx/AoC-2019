@@ -120,10 +120,12 @@ if __name__ == '__main__':
 
     r = part1(data)
     print(f'Part 1: {r}')
+    check_solution(7, 1, r)
 
     print()
     r = part2(data)
     print(f'Part 2: {r}')
+    check_solution(7, 2, r)
 
 #    print('Test Compare')
 #    test_eq('Pos 1 == 8', test_out, [0, ], [3,9,8,9,10,9,4,9,99,-1,8], echo(4))
