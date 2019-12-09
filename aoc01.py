@@ -52,7 +52,9 @@ if __name__ == '__main__':
 
     sf = part1(data)
     print(f'Part 1: {sf}')
+    check_solution(1, 1, sf)
 
     sff = part2(data)
     print(f'Part 2: {sff}')
+    check_solution(1, 2, sf)
 

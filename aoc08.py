@@ -10,9 +10,9 @@ def get_input(file_name):
         data = f.readlines()
     return [int(d) for d in data[0].strip()]
 
-def layerize(data, width, length):
+def layerize(data, width, height):
     layers = []
-    n = width * length
+    n = width * height
     i = 0
     while i < len(data):
         layers.append(data[i:i+n])
@@ -25,10 +25,10 @@ def extract(layer):
         count[i] += 1
     return count
 
-def part1(data):
-    layers = layerize(data, 25, 6)
+def part1(data, width, height):
+    layers = layerize(data, width, height)
     pd(len(layers))
-    match = (25*6,0,0)
+    match = (width*height,0,0)
     for layer in layers:
         r = extract(layer)
         if r[0] < match[0]:
@@ -36,11 +36,11 @@ def part1(data):
 
     return match[1] * match[2]
 
-def part2(data):
-    final = [2 for i in range(25*6)]
-    layers = layerize(data, 25, 6)
+def part2(data, width, height):
+    final = [2 for i in range(width*height)]
+    layers = layerize(data, width, height)
     pd(len(layers))
-    match = (25*6,0,0)
+    match = (width*height,0,0)
     for layer in layers:
         for c in range(len(layer)):
             if final[c] == 2:
@@ -69,7 +69,9 @@ if __name__ == '__main__':
 
     print()
     print('Testing Part 2')
-    # test_eq('Ex2.1', calc_fuel_fuel, 2, 14)
+    test2_rd = '0222112222120000'
+    test2 = [int(d) for d in test2_rd]
+    test_eq('Ex2.1', part2, [0,1,1,0], test2, 2, 2)
     # test_eq('Ex2.2', calc_fuel_fuel, 966, 1969)
     # test_eq('Ex2.3', calc_fuel_fuel, 50346, 100756)
 
@@ -77,10 +79,12 @@ if __name__ == '__main__':
 
     data = get_input('input8')
 
-    r = part1(data)
+    r = part1(data, 25, 6)
     print(f'Part 1: {r}')
+    check_solution(8, 1, r)
 
-    img = part2(data)
+    img = part2(data, 25, 6)
     print(f'Part 2: {img}')
+    check_solution(8, 2, r)
     draw(img)
 

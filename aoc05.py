@@ -57,6 +57,7 @@ if __name__ == '__main__':
 
     r = part1(data)
     print(f'Part 1: {r}')
+    check_solution(5, 1, r)
 
     print()
     print('Test Compare')
@@ -92,3 +93,4 @@ if __name__ == '__main__':
 
     r = part2(data)
     print(f'Part 2: {r}')
+    check_solution(5, 2, r)

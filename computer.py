@@ -27,7 +27,7 @@ class Computer:
 
     def step(self):
         instruction = self.get_addr(self.ip)
-        opcode= instruction % 100 # last 2 digits
+        opcode = instruction % 100 # last 2 digits
         pd('Opcode: ', opcode, 'at', self.ip)
         self.modes = ((instruction // 100) % 10, (instruction // 1000) % 10, (instruction // 10000) % 10, )
 

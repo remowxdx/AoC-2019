@@ -92,7 +92,9 @@ if __name__ == '__main__':
 
     p1 = part1(data)
     print(f'Part 1: {p1}')
+    check_solution(4, 1, p1)
 
     p2 = part2(data)
     print(f'Part 2: {p2}')
+    check_solution(4, 2, p2)
 
