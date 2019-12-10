@@ -2,7 +2,7 @@
 
 from aoc import *
 
-pd = Debug(True)
+pd = Debug(False)
 
 def get_input(file_name):
     lines = []
@@ -53,7 +53,7 @@ def wire_path_with_steps(data):
 
 def find_nearest_crossing(data):
     p1 = wire_path(data[0])
-    print('-' * 40)
+    pd('-' * 40)
     pos = (0, 0)
     best_crossing = None
     for d in data[1]:
@@ -65,13 +65,13 @@ def find_nearest_crossing(data):
             if pos in p1:
                 dist = abs(pos[0]) + abs(pos[1])
                 if best_crossing is None or dist < best_crossing:
-                    print('**********', dist, pos)
+                    pd('**********', dist, pos)
                     best_crossing = dist
     return best_crossing
 
 def find_shortest_crossing(data):
     p1 = wire_path_with_steps(data[0])
-    print('-' * 40)
+    pd('-' * 40)
     pos = (0, 0)
     best_crossing = None
     steps = 0
@@ -85,7 +85,7 @@ def find_shortest_crossing(data):
             if pos in p1:
                 dist = steps + p1[pos]
                 if best_crossing is None or dist < best_crossing:
-                    print('**********', dist, pos)
+                    pd('**********', dist, pos)
                     best_crossing = dist
     return best_crossing
 
@@ -115,7 +115,7 @@ if __name__ == '__main__':
     #print(p)
 
     data = get_input('input3')
-    print(data)
+    pd(data)
 
     r = part1(data)
 
