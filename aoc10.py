@@ -111,7 +111,7 @@ def part2(data):
         if r > max_vis[0]:
             max_vis = (r, asteroid)
     r = run_cannon(max_vis[1], asteroids)
-    return r[200 - 1]
+    return 100 * r[200 - 1][0] + r[200 - 1][1]
 
 if __name__ == '__main__':
 
