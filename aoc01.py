@@ -50,11 +50,11 @@ if __name__ == '__main__':
 
     data = get_input('input1')
 
-    sf = part1(data)
-    print(f'Part 1: {sf}')
-    check_solution(1, 1, sf)
+    r = part1(data)
+    print(f'Part 1: {r}')
+    check_solution(1, 1, r)
 
-    sff = part2(data)
-    print(f'Part 2: {sff}')
-    check_solution(1, 2, sf)
+    r = part2(data)
+    print(f'Part 2: {r}')
+    check_solution(1, 2, r)
 
