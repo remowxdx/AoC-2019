@@ -85,6 +85,6 @@ if __name__ == '__main__':
 
     img = part2(data, 25, 6)
     print(f'Part 2: {img}')
-    check_solution(8, 2, r)
+    check_solution(8, 2, '\n'.join([''.join([str(p) for p in row]) for row in [img[i*25:(i+1)*25] for i in range(6)]]))
     draw(img)
 
