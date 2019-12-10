@@ -3,7 +3,7 @@
 from aoc import *
 from computer import Computer
 
-from itertools import permutations
+# from itertools import permutations
 
 pd = Debug(False)
 
