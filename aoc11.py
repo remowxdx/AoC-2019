@@ -20,9 +20,9 @@ def test2(data):
 
 def move(pos, dir):
     if dir == '^':
-        return (pos[0], pos[1]+1)
-    elif dir == 'v':
         return (pos[0], pos[1]-1)
+    elif dir == 'v':
+        return (pos[0], pos[1]+1)
     elif dir == '>':
         return (pos[0]+1, pos[1])
     elif dir == '<':
@@ -36,7 +36,8 @@ def part1(data):
     c = Computer(data, [0, ])
     pos = (0,0)
     dir = 0
-    while (r := c.run()):
+    while True:
+        r = c.run()
         if r == 'HALT':
             return len(painted)
         painted[pos] = c.recv()
@@ -61,7 +62,8 @@ def part2(data):
     c = Computer(data, [1, ])
     pos = (0,0)
     dir = 0
-    while (r := c.run()):
+    while True:
+        r = c.run()
         if r == 'HALT':
             break
         painted[pos] = c.recv()
@@ -77,6 +79,7 @@ def part2(data):
             c.send(painted[pos])
         else:
             c.send(0)
+        r = c.run()
 
     m = [0, 0, 0, 0]
     for p in painted:
@@ -95,9 +98,9 @@ def part2(data):
     for p in painted:
         if painted[p] == 1:
             pd(p, p[0]-m[0], p[1]-m[2])
-            panels[p[1]-m[2]][p[0]-m[0]] = '#'
+            panels[p[1]-m[2]][p[0]-m[0]] = '\u2588'
 
-    s = '\n'.join([''.join(line) for line in reversed(panels)])
+    s = '\n'.join([''.join(line) for line in panels])
     return s
 
 if __name__ == '__main__':
