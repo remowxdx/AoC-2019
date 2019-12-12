@@ -88,7 +88,7 @@ class System2:
         self.step = [ 0 for c in range(3)]
         for i in range(len(positions)):
             self.parse_position(i, positions[i])
-        self.history = [ [self.status[c].copy(), ] for c in range(3)]
+        self.history = [ self.status[c].copy() for c in range(3)]
         self.intro = [ 0 for c in range(3)]
         self.period = [ 0 for c in range(3)]
 
@@ -115,15 +115,13 @@ class System2:
         for i in range(n):
             status[i] += status[i+n]
 
-        if status in self.history[c]:
-            print('F:', c, self.step[c], status)
-            intro = self.history[c].index(status)
-            self.intro[c] = intro
-            self.period[c] = self.step[c] - intro
+        if status == self.history[c]:
+            pd('F:', c, self.step[c], status)
+            self.intro[c] = 0
+            self.period[c] = self.step[c]
             return False
-        self.history[c].append(status.copy())
         if self.step[c] % 1000 == 0:
-            print('E:', c, self.step[c], status)
+            pd('E:', c, self.step[c], status)
         return True
 
     def find_period(self, c):
@@ -132,7 +130,7 @@ class System2:
             r = self.next(c)
 
     def find_periods(self):
-        for c in [2,1]:
+        for c in [1,2,0]:
             self.find_period(c)
 
     def find_repeat(self):
@@ -167,8 +165,6 @@ def part1(data):
 def part2(data):
     s = System2(data)
     s.find_periods()
-    print(s.intro)
-    print(s.period)
     return s.find_repeat()
 
 if __name__ == '__main__':
@@ -202,7 +198,3 @@ if __name__ == '__main__':
     if r is not None:
         print('Part 2:', r)
         check_solution(DAY, 2, r)
-
-# F: 2 193052 [4, -8, 9, -2, 0, 0, 0, 0]
-# F: 1 96236 [1, -10, 4, 6, 0, 0, 0, 0]
-# F: 0 286332 [-15, 1, -5, 4, 0, 0, 0, 0]
