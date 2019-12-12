@@ -2,6 +2,8 @@
 
 from aoc import *
 
+import math
+
 pd = Debug(False)
 DAY = 12
 
@@ -49,8 +51,6 @@ class System:
         for pos in positions:
             self.moons.append(Moon(pos))
         self.step = 0
-        self.states = set()
-        self.states.add(str(self))
 
     def gravity(self):
         for m in self.moons:
@@ -69,48 +69,78 @@ class System:
             e += m.energy()
         return e
 
-    def sign(self, m, n):
-        if m < n : return 1
-        if m == n : return 0
-        return -1
-
-    def solve(self, c, xs, vs, ac):
-        a = (ac[c[0]] - ac[c[1]]) / 2
-        b = vs[c[0]] - vs[c[1]] + a
-        c = xs[c[0]] - xs[c[1]]
-        det = math.sqrt(b*b - 4 * a * c)
-        if det < 0:
-            raise Exception('Det < 0!')
-        return [(-b+det)/2/a, (-b-det)/2/a]
-
-
-    def advance(self, i):
-        xs = [m.p[i] for m in self.moons]
-        vs = [m.v[i] for m in self.moons]
-        ac = [sum([self.sign(m,n) for n in xs]) for m in xs]
-        s = []
-        for c in [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]:
-            s.extend(self.solve(c, xs, vs, ac))
-        t = min([t for t in s if t >= 0])
-
-        xs = []
-
     def next(self):
         self.gravity()
         self.velocity()
         self.step += 1
-        if str(self) in self.states:
-            return self.step
-        self.states.add(str(self))
         return 0
 
     def __str__(self):
-        # l = [f'After {self.step} steps:\n', ]
+        l = [f'After {self.step} steps:\n', ]
         l = []
         for m in self.moons:
             l.append(str(m))
         return '\n'.join(l)
 
+class System2:
+    def __init__(self, positions):
+        self.status = [[0 for _ in range(len(positions) * 2)] for _ in range(3)]
+        self.step = [ 0 for c in range(3)]
+        for i in range(len(positions)):
+            self.parse_position(i, positions[i])
+        self.history = [ [self.status[c].copy(), ] for c in range(3)]
+        self.intro = [ 0 for c in range(3)]
+        self.period = [ 0 for c in range(3)]
+
+    def parse_position(self, i, position):
+        s = position.strip('<>\n')
+        coords = [c.strip() for c in s.split(',')]
+        p = [int(c.split('=')[1]) for c in coords]
+        for c in range(3):
+            self.status[c][i] = p[c]
+
+    def next(self, c):
+        self.step[c] += 1
+        status = self.status[c]
+        n = len(status) // 2
+        for i in range(n):
+            for j in range(i + 1, n):
+                if status[i] < status[j]:
+                    status[i+n] += 1
+                    status[j+n] -= 1
+                elif status[i] > status[j]:
+                    status[i+n] -= 1
+                    status[j+n] += 1
+
+        for i in range(n):
+            status[i] += status[i+n]
+
+        if status in self.history[c]:
+            print('F:', c, self.step[c], status)
+            intro = self.history[c].index(status)
+            self.intro[c] = intro
+            self.period[c] = self.step[c] - intro
+            return False
+        self.history[c].append(status.copy())
+        if self.step[c] % 1000 == 0:
+            print('E:', c, self.step[c], status)
+        return True
+
+    def find_period(self, c):
+        r = True
+        while r:
+            r = self.next(c)
+
+    def find_periods(self):
+        for c in [2,1]:
+            self.find_period(c)
+
+    def find_repeat(self):
+        i = max(self.intro)
+        def lcm(a, b):
+            g = math.gcd(a, b)
+            return a // g * b
+        return i + lcm(lcm(self.period[0], self.period[1]), self.period[2])
 
 def test1(data, steps):
     s = System(data)
@@ -123,25 +153,23 @@ def test1(data, steps):
     return s.energy()
 
 def test2(data):
-    s = System(data)
-    r = 0
-    while r == 0:
-        r = s.next()
-    return r
+    s = System2(data)
+    s.find_periods()
+    return s.find_repeat()
 
 def part1(data):
     s = System(data)
     for i in range(1000):
         s.next()
-        print(s)
+        pd(s)
     return s.energy()
 
 def part2(data):
-    s = System(data)
-    r = 0
-    while r == 0:
-        r = s.next()
-    return r
+    s = System2(data)
+    s.find_periods()
+    print(s.intro)
+    print(s.period)
+    return s.find_repeat()
 
 if __name__ == '__main__':
 
@@ -160,7 +188,7 @@ if __name__ == '__main__':
 
     print('Test Part 2:')
     test_eq('Test 2.1', test2, 2772, test_input_1)
-    # test_eq('Test 2.2', test2, 4686774924, test_input_2)
+    test_eq('Test 2.2', test2, 4686774924, test_input_2)
     print()
 
     data = get_input(f'input{DAY}')
@@ -173,4 +201,8 @@ if __name__ == '__main__':
     r = part2(data)
     if r is not None:
         print('Part 2:', r)
-        save_solution(DAY, 2, r)
+        check_solution(DAY, 2, r)
+
+# F: 2 193052 [4, -8, 9, -2, 0, 0, 0, 0]
+# F: 1 96236 [1, -10, 4, 6, 0, 0, 0, 0]
+# F: 0 286332 [-15, 1, -5, 4, 0, 0, 0, 0]
