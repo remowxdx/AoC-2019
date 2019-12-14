@@ -25,7 +25,8 @@ class Factory:
             self.reactions[reaction[0]] = (reaction[1], reaction[2])
         return self.reactions
 
-    def parse_reaction(self, line):
+    @staticmethod
+    def parse_reaction(line):
         # pd('Line:', line)
         react = line.strip().split('=>')
         if len(react) != 2:
