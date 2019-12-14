@@ -14,12 +14,10 @@ class Factory:
 
     def __init__(self, reactions):
         self.parse_reactions(reactions)
-        self.produced = {}
-        self.ore = 0
-        self.fuel = 0
+        self.stock = {}
 
     def parse_reactions(self, lines):
-        self.reactions = {'ORE': (1, None)}
+        self.reactions = {}
         for line in lines:
             if line.strip() == '':
                 continue
@@ -28,7 +26,7 @@ class Factory:
         return self.reactions
 
     def parse_reaction(self, line):
-        # print('Line:', line)
+        # pd('Line:', line)
         react = line.strip().split('=>')
         if len(react) != 2:
             raise Exception(f'This is no reaction (no "=>"): {line}.')
@@ -41,82 +39,102 @@ class Factory:
         return res[1], int(res[0]), reagents
 
     def produce(self, chem, qty):
-        if chem == 'ORE':
-            pd(f'ORE +++++++ {qty}')
-            if 'ORE' not in self.produced:
-                self.produced['ORE'] = 0
-            self.produced['ORE'] += qty
-            self.ore += qty
-        if chem == 'FUEL':
-            self.fuel += qty
 
-        if chem not in self.produced:
-            self.produced[chem] = 0
+        if chem not in self.stock:
+            self.stock[chem] = 0
 
-        self.produced[chem] -= qty
+        # self.stock[chem] -= qty
+        rest = self.stock[chem] - qty
 
-        if self.produced[chem] >= 0:
-            return
+        if rest >= 0:
+            return qty
 
-        reaction = self.reactions[chem]
-        reagents = reaction[1]
-        qty_per_reaction = reaction[0]
+        if chem not in self.reactions:
+            raise Exception(f'Cannot produce {chem}.')
 
-        n, r = divmod(self.produced[chem], qty_per_reaction)
+        (qty_per_reaction, reagents) = self.reactions[chem]
+
+        n, r = divmod(rest, qty_per_reaction)
 
         for rc in reagents:
-            self.produce(rc, reagents[rc] * (-n))
+            rq = self.produce(rc, reagents[rc] * (-n))
+            self.stock[rc] -= rq
 
-        self.produced[chem] = r
+        self.stock[chem] -= rest - r
+
+        return qty
+
+    def remove_from_stock(self, chem, qty=None):
+
+        if chem not in self.stock:
+            self.stock[chem] = 0
+
+        if qty is None:
+            qty = self.stock[chem]
+
+        ret = min(qty, self.stock[chem])
+        self.stock[chem] -= ret
+        return ret
+
+    def add_to_stock(self, chem, qty=1):
+        if chem not in self.stock:
+            self.stock[chem] = 0
+        self.stock[chem] += qty
+        
     
 def test1(data):
+    stocked = 10000000
     f = Factory(data)
-    f.produce('FUEL', 1)
-    return f.ore
+    f.add_to_stock('ORE', stocked)
+    fuel = f.produce('FUEL', 1)
+    # pd(f.stock)
+    return stocked - f.stock['ORE']
 
 def test2(data):
 
     MAX = 1000000000000
-    rest = MAX
 
     f = Factory(data)
+    f.add_to_stock('ORE', MAX)
 
-    f.produce('FUEL', 1)
-    base = f.ore
+    fuel = f.produce('FUEL', 1)
+    f.remove_from_stock('FUEL', 1)
+    base = MAX - f.stock['ORE']
 
-    n = rest // base
+    n = f.stock['ORE'] // base
     while n > 0:
-        f.produce('FUEL', rest // base)
-        rest = MAX - f.ore
-        n = rest // base
-        pd('Rest:', rest, base, rest // base)
+        f.produce('FUEL', n)
+        fuel += f.remove_from_stock('FUEL')
+        n = f.stock['ORE'] // base
+        pd('Rest:', f.stock['ORE'], base, n)
 
-
-    return f.fuel
+    return fuel
 
 def part1(data):
+    stocked = 10000000
     f = Factory(data)
-    f.produce('FUEL', 1)
-    return f.ore
+    f.add_to_stock('ORE', stocked)
+    fuel = f.produce('FUEL', 1)
+    return stocked - f.stock['ORE']
 
 def part2(data):
     MAX = 1000000000000
-    rest = MAX
 
     f = Factory(data)
+    f.add_to_stock('ORE', MAX)
 
     f.produce('FUEL', 1)
-    base = f.ore
+    fuel = f.remove_from_stock('FUEL')
+    base = MAX - f.stock['ORE']
 
-    n = rest // base
+    n = f.stock['ORE'] // base
     while n > 0:
-        f.produce('FUEL', rest // base)
-        rest = MAX - f.ore
-        n = rest // base
-        pd('Rest:', rest, base, rest // base)
+        f.produce('FUEL', n)
+        fuel += f.remove_from_stock('FUEL')
+        n = f.stock['ORE'] // base
+        pd('Rest:', f.stock['ORE'], base, n)
 
-
-    return f.fuel
+    return fuel
 
 if __name__ == '__main__':
 
@@ -187,9 +205,9 @@ if __name__ == '__main__':
 
     test_input_2 = [4,5,6]
     print('Test Part 2:')
-    test_eq('Test 1.3', test2, 82892753, test_input_3)
-    test_eq('Test 1.4', test2, 5586022, test_input_4)
-    test_eq('Test 1.5', test2, 460664, test_input_5)
+    test_eq('Test 2.3', test2, 82892753, test_input_3)
+    test_eq('Test 2.4', test2, 5586022, test_input_4)
+    test_eq('Test 2.5', test2, 460664, test_input_5)
     print()
 
     data = get_input(f'input{DAY}')
