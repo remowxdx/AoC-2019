@@ -3,7 +3,10 @@
 from aoc import *
 from computer import *
 
+import time
+
 pd = Debug(False)
+SHOW_TO_HUMAN = False
 DAY = 13
 
 def get_input(filename):
@@ -70,7 +73,7 @@ class Game:
     def print_tile_at(self, x, y, t):
         sx = x - self.limits[0] + 1
         sy = y - self.limits[2] + 1
-        print(f'\x1b[{sy};{sx}H{t}', end='')
+        print(f'\x1b[{sy};{sx}H{t}') #, end='')
 
     def print_score(self, score):
         l = len(str(score))
@@ -81,6 +84,8 @@ class Game:
         print(f'\x1b[1;1H\x1b[J', end='')
 
     def get_direction(self):
+        if SHOW_TO_HUMAN:
+            time.sleep(0.02)
         if self.paddle[0] < self.ball[0]:
             return 1
         if self.paddle[0] > self.ball[0]:
@@ -89,7 +94,7 @@ class Game:
         
 def part1(data):
     c = Computer(data)
-    g = Game(show=False)
+    g = Game()
 
     steps = 0
 
@@ -109,7 +114,7 @@ def part1(data):
 
 def part2(data):
     c = Computer(data)
-    g = Game(show=False)
+    g = Game()
 
     # Insert coin
     c.memory[0] = 2
