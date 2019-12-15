@@ -4,6 +4,8 @@ from aoc import *
 
 from computer import Computer
 
+SHOW_MAZE_WALKING = False
+
 pd = Debug(False)
 DAY = 15
 
@@ -59,9 +61,9 @@ class Maze:
     def __str__(self):
         pr = ['\u2588', ' ', 'X', '?', 'R', 'O']
         s = []
-        for y in range(self.limits[2]-1, self.limits[3]+2):
+        for y in range(self.limits[2], self.limits[3]+1):
             row = []
-            for x in range(self.limits[0]-1, self.limits[1]+2):
+            for x in range(self.limits[0], self.limits[1]+1):
                 row.append(pr[self.get_pos((x,y))])
             s.append(''.join(row))
         return '\n'.join(s)
@@ -72,6 +74,8 @@ class Robot():
         self.maze = Maze()
         self.moves = 0
         self.found = 0
+        if SHOW_MAZE_WALKING:
+            print('\x1b[2J')
 
     def move(self, direction):
         self.c.send(direction)
@@ -81,6 +85,9 @@ class Robot():
         return r
 
     def explore(self):
+        if SHOW_MAZE_WALKING:
+            print('\x1b[1;1H')
+            print(self.maze)
         back = [2,1,4,3]
         for d in [1,2,3,4]:
             if self.maze.peek_dir(d) == 3:
@@ -101,6 +108,8 @@ class Oxygen():
         self.maze.pos = self.oxygen
         self.max_moves = 0
         self.moves = 0
+        if SHOW_MAZE_WALKING:
+            print('\x1b[2J')
 
     def find_oxygen(self):
         for p in self.maze.maze:
@@ -109,6 +118,9 @@ class Oxygen():
         raise Exception('Cannot find oxygen.')
 
     def flood(self):
+        if SHOW_MAZE_WALKING:
+            print('\x1b[1;1H')
+            print(self.maze)
         back = [2,1,4,3]
         for d in [1,2,3,4]:
             r = self.maze.peek_dir(d)
