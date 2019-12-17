@@ -47,7 +47,8 @@ def check_solution(day, part, candidate):
 
 def retrieve_input(day):
     url = 'https://adventofcode.com/2019/day/{}/input'
-    cookie = 'session=53616c7465645f5fa19b27d6da38447d4c5e3497d395321a717272e8216f40a40301ebae38cfd12b021e5004a47483e4'
+    with open('session', 'r') as f:
+        cookie = f.read().strip()
     req = urllib.request.Request(url.format(day))
     req.add_header('Cookie', cookie)
     r = urllib.request.urlopen(req)
