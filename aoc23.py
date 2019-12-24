@@ -3,7 +3,7 @@
 from aoc import *
 from computer import Computer
 
-pd = Debug(True)
+pd = Debug(False)
 DAY = 23
 
 def get_input(filename):
@@ -32,7 +32,7 @@ class Network:
         self.nat_last_sent = None
         self.cs = [[Computer(data.copy()), 'WAIT'] for i in range(50)]
         for i, c in enumerate(self.cs):
-            print(f'Initializing computer {i}.')
+            pd(f'Initializing computer {i}.')
             c[0].send(i)
             c[1] = c[0].run()
         self.nat = (None, None)
@@ -73,7 +73,7 @@ class Network:
         if y is None:
             raise Exception('Computer sent address and x, but not y.')
         p = Packet(address, x, y)
-        print(f'Message {i} -> {address}: ({x}, {y}).')
+        pd(f'Message {i} -> {address}: ({x}, {y}).')
         return p
         
     def send_packet(self, packet):
